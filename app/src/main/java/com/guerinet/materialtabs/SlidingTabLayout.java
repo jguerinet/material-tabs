@@ -49,6 +49,12 @@ public class SlidingTabLayout extends HorizontalScrollView {
 	private static final int TAB_VIEW_PADDING_DIPS = 16;
 	private static final int TAB_VIEW_TEXT_SIZE_SP = 12;
 
+	/**
+	 * Keeps track of the current tab open to avoid calling methods when a user clicks on an
+	 *  already open tab
+	 */
+	private int mCurrentPosition = -1;
+
 	private int mTitleOffset;
 
 	private int mTabViewLayoutId;
@@ -56,7 +62,7 @@ public class SlidingTabLayout extends HorizontalScrollView {
 	private boolean mDistributeEvenly;
 
 	private ViewPager mViewPager;
-	private SparseArray<String> mContentDescriptions = new SparseArray<String>();
+	private SparseArray<String> mContentDescriptions = new SparseArray<>();
 	private ViewPager.OnPageChangeListener mViewPagerPageChangeListener;
 
 	private final SlidingTabStrip mTabStrip;
@@ -205,6 +211,7 @@ public class SlidingTabLayout extends HorizontalScrollView {
 			mTabStrip.addView(tabView);
 			if (i == mViewPager.getCurrentItem()) {
 				tabView.setSelected(true);
+				mCurrentPosition = i;
 			}
 		}
 	}
@@ -294,7 +301,13 @@ public class SlidingTabLayout extends HorizontalScrollView {
 		@Override
 		public void onClick(View v) {
 			for (int i = 0; i < mTabStrip.getChildCount(); i++) {
-				if (v == mTabStrip.getChildAt(i)) {
+				if (v == mTabStrip.getChildAt(i)){
+					//If this tab is already open, do nothing
+					if(i == mCurrentPosition){
+						return;
+					}
+					//Set the new position
+					mCurrentPosition = i;
 					mViewPager.setCurrentItem(i);
 					return;
 				}
