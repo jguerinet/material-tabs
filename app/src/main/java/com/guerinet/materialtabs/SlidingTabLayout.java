@@ -2,6 +2,7 @@ package com.guerinet.materialtabs;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
@@ -164,7 +165,9 @@ public class SlidingTabLayout extends HorizontalScrollView {
 		getContext().getTheme().resolveAttribute(android.R.attr.selectableItemBackground,
 				outValue, true);
 		textView.setBackgroundResource(outValue.resourceId);
-		textView.setAllCaps(true);
+		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH){
+			textView.setAllCaps(true);
+		}
 
 		int padding = (int) (TAB_VIEW_PADDING_DIPS * getResources().getDisplayMetrics().density);
 		textView.setPadding(padding, padding, padding, padding);
