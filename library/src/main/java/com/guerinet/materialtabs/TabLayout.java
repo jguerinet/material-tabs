@@ -415,6 +415,17 @@ public class TabLayout extends HorizontalScrollView {
 	}
 
 	/**
+	 * Forces the OnClick of the currently opened tab
+	 */
+	public void clickCurrentTab(){
+		int currentPosition = mCurrentPosition;
+		//Set this to -1 to force the click action
+		mCurrentPosition = -1;
+
+		getTabView(currentPosition).performClick();
+	}
+
+	/**
 	 * Sets the color of the indicator when a tab is selected
 	 *
 	 * @param color The indicator color
