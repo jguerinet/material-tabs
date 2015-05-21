@@ -397,6 +397,8 @@ public class TabLayout extends HorizontalScrollView {
 
 		@Override
 		public void onPageSelected(int position) {
+			//Update the current position (only useful when using this with a ViewPager)
+			mCurrentPosition = position;
 			if (mScrollState == ViewPager.SCROLL_STATE_IDLE) {
 				mTabStrip.onViewPagerPageChanged(position, 0f);
 				scrollToTab(position, 0);
