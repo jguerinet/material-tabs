@@ -394,7 +394,7 @@ public class TabLayout extends HorizontalScrollView {
 	 * @param initialTab The initial tab to show
 	 * @param titles     The titles for the tabs
 	 */
-	public void populateTabStrip(Callback callback, int initialTab, List<String> titles){
+	public void addTabs(Callback callback, int initialTab, List<String> titles){
 		//Create a new listener based on the given callback
 		TabClickListener listener = new TabClickListener(callback);
 		View firsTab = null;
@@ -460,7 +460,7 @@ public class TabLayout extends HorizontalScrollView {
 		List<String> tabTitles = new ArrayList<>();
 		Collections.addAll(tabTitles, titles);
 
-		populateTabStrip(callback, initialTab, tabTitles);
+		addTabs(callback, initialTab, tabTitles);
 	}
 
 	/**
@@ -471,7 +471,7 @@ public class TabLayout extends HorizontalScrollView {
 	 * @param titles   The titles for the tabs
 	 */
 	public void addTabs(Callback callback, List<String> titles){
-		populateTabStrip(callback, -1, titles);
+		addTabs(callback, -1, titles);
 	}
 
 	/**
