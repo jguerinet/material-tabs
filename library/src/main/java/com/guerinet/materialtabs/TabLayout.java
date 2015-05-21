@@ -5,6 +5,7 @@ import android.graphics.Typeface;
 import android.os.Build;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.SparseArray;
 import android.util.TypedValue;
@@ -253,6 +254,9 @@ public class TabLayout extends HorizontalScrollView {
 	protected TextView createDefaultTabView(Context context) {
 		TextView textView = new TextView(context);
 		textView.setGravity(Gravity.CENTER);
+		//Keep it to 1 line or the selectors won't work
+		textView.setSingleLine();
+		textView.setEllipsize(TextUtils.TruncateAt.END);
 		textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, TAB_VIEW_TEXT_SIZE_SP);
 		textView.setTypeface(Typeface.DEFAULT_BOLD);
 		textView.setLayoutParams(new LinearLayout.LayoutParams(
