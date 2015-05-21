@@ -67,17 +67,17 @@ public class TabLayout extends HorizontalScrollView {
 	 */
 	private boolean mHasIcon = false;
 	/**
-	 * The default selector Id, -1 if none set
+	 * The default selector Id, null if none set
 	 */
-	private int mDefaultSelectorId = -1;
+	private Integer mDefaultSelectorId = null;
 	/**
 	 * True if the custom tab should use the default selector, false otherwise
 	 */
 	private boolean mDefaultSelector;
 	/**
-	 * The text color to use for the tabs, -1 if none set
+	 * The text color to use for the tabs, null if none set
 	 */
-	private int mDefaultTextColor = -1;
+	private Integer mDefaultTextColor = null;
 	/**
 	 * The Id of the ImageView for the icon
 	 */
@@ -197,8 +197,8 @@ public class TabLayout extends HorizontalScrollView {
 		else{
 			TypedValue outValue = new TypedValue();
 			//Use the custom default selector if it is set
-			getContext().getTheme().resolveAttribute(mDefaultSelectorId != -1 ? mDefaultSelectorId :
-					android.R.attr.selectableItemBackground, outValue, true);
+			getContext().getTheme().resolveAttribute(mDefaultSelectorId != null ?
+					mDefaultSelectorId : android.R.attr.selectableItemBackground, outValue, true);
 			return outValue.resourceId;
 		}
 	}
@@ -260,7 +260,7 @@ public class TabLayout extends HorizontalScrollView {
 		textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, TAB_VIEW_TEXT_SIZE_SP);
 		textView.setTypeface(Typeface.DEFAULT_BOLD);
 		//Set the text color if there is one
-		if(this.mDefaultTextColor != -1){
+		if(this.mDefaultTextColor != null){
 			textView.setTextColor(this.mDefaultTextColor);
 		}
 		textView.setLayoutParams(new LinearLayout.LayoutParams(
