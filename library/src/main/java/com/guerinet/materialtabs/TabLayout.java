@@ -238,7 +238,7 @@ public class TabLayout extends HorizontalScrollView {
 				//Set the default selector if needed
 				if(mDefaultSelector){
 					TypedValue outValue = new TypedValue();
-					getContext().getTheme().resolveAttribute(R.attr.selectableItemBackground,
+					getContext().getTheme().resolveAttribute(android.R.attr.selectableItemBackground,
 							outValue, true);
 					tabView.setBackgroundResource(outValue.resourceId);
 				}
@@ -434,7 +434,7 @@ public class TabLayout extends HorizontalScrollView {
 				//Set the default selector if needed
 				if(mDefaultSelector){
 					TypedValue outValue = new TypedValue();
-					getContext().getTheme().resolveAttribute(R.attr.selectableItemBackground,
+					getContext().getTheme().resolveAttribute(android.R.attr.selectableItemBackground,
 							outValue, true);
 					tabView.setBackgroundResource(outValue.resourceId);
 				}

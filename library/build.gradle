@@ -1,23 +1,69 @@
 apply plugin: 'com.android.library'
+apply plugin: 'com.github.dcendents.android-maven'
 
-android{
+version = "1.0.0"
+
+android {
     compileSdkVersion 22
     buildToolsVersion "22.0.1"
 
-    defaultConfig{
+    defaultConfig {
         minSdkVersion 10
         targetSdkVersion 22
-        versionName '1.0'
+        versionCode 1
+        versionName version
     }
-    buildTypes{
-        release{
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
+    buildTypes {}
 }
 
 dependencies{
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:22.1.1'
+    compile 'com.android.support:support-v4:22.1.1'
+}
+
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+artifacts {
+    archives sourcesJar
+}
+
+def siteUrl = 'https://github.com/jguerinet/material-tabs'
+def gitUrl = 'https://github.com/jguerinet/material-tabs.git'
+group = "com.guerinet.materialtabs"
+
+install {
+    repositories.mavenInstaller {
+        // This generates POM.xml with proper parameters
+        pom {
+            project {
+                packaging 'jar'
+
+                // Add your description here
+                name 'Custom extension of Google\'s SlidingTabLayout'
+                url siteUrl
+
+                // Set your license
+                licenses {
+                    license {
+                        name 'The Apache Software License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        id 'jguerinet'
+                        name 'Julien Guerinet'
+                        email 'julien@guerinet.com'
+                    }
+                }
+                scm {
+                    connection gitUrl
+                    developerConnection gitUrl
+                    url siteUrl
+                }
+            }
+        }
+    }
 }
