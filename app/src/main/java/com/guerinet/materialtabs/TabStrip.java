@@ -50,6 +50,17 @@ class TabStrip extends LinearLayout {
 	}
 
 	TabStrip(Context context, AttributeSet attrs) {
+		this(context, attrs, DEFAULT_SELECTED_INDICATOR_COLOR);
+	}
+
+	/**
+	 * Constructor that sets the default tab selected color
+	 *
+	 * @param context       The app context
+	 * @param attrs         The attribute set
+	 * @param selectedColor The color to use for the strip when the tab is selected
+	 */
+	TabStrip(Context context, AttributeSet attrs, int selectedColor){
 		super(context, attrs);
 		setWillNotDraw(false);
 
@@ -63,7 +74,7 @@ class TabStrip extends LinearLayout {
 				DEFAULT_BOTTOM_BORDER_COLOR_ALPHA);
 
 		mDefaultTabColorizer = new SimpleTabColorizer();
-		mDefaultTabColorizer.setIndicatorColors(DEFAULT_SELECTED_INDICATOR_COLOR);
+		mDefaultTabColorizer.setIndicatorColors(selectedColor);
 
 		mBottomBorderThickness = (int) (DEFAULT_BOTTOM_BORDER_THICKNESS_DIPS * density);
 		mBottomBorderPaint = new Paint();
