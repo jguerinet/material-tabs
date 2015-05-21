@@ -322,6 +322,13 @@ public class TabLayout extends HorizontalScrollView {
 		}
 	}
 
+	/**
+	 * Clears the tabs
+	 */
+	public void clear(){
+		mTabStrip.removeAllViews();
+	}
+
 	/* NON-VIEWPAGER TABS */
 
 	/**
