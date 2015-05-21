@@ -66,6 +66,10 @@ public class TabLayout extends HorizontalScrollView {
 	 */
 	private boolean mHasIcon = false;
 	/**
+	 * True if the custom tab should use the default selector, false otherwise
+	 */
+	private boolean mDefaultSelector;
+	/**
 	 * The Id of the ImageView for the icon
 	 */
 	private int mTabViewIconId;
@@ -157,13 +161,17 @@ public class TabLayout extends HorizontalScrollView {
 	/**
 	 * Sets the custom layout view that has an icon
 	 *
-	 * @param layoutResId To Layout Id to be inflated
-	 * @param textViewId  Id of the {@link TextView} in the inflated view
-	 * @param imageViewId Id of the {@link android.widget.ImageView} in the inflated view
-	 * @param iconIds     The list of icon Ids to use for the icon
+	 * @param layoutResId     To Layout Id to be inflated
+	 * @param textViewId      Id of the {@link TextView} in the inflated view
+	 * @param imageViewId     Id of the {@link android.widget.ImageView} in the inflated view
+	 * @param iconIds         The list of icon Ids to use for the icon
+	 * @param defaultSelector True if we should use the default selector as the background, false
+	 *                        otherwise. Note: This will override any set background
 	 */
-	public void setCustomTabView(int layoutResId, int textViewId, int imageViewId, int[] iconIds){
+	public void setCustomTabView(int layoutResId, int textViewId, int imageViewId, int[] iconIds,
+	                             boolean defaultSelector){
 		setCustomTabView(layoutResId, textViewId);
+		mDefaultSelector = defaultSelector;
 		mHasIcon = true;
 		mTabViewIconId = imageViewId;
 		mIconIds = iconIds;
@@ -226,6 +234,13 @@ public class TabLayout extends HorizontalScrollView {
 				if(mHasIcon){
 					ImageView iconView = (ImageView)tabView.findViewById(mTabViewIconId);
 					iconView.setImageResource(mIconIds[i]);
+				}
+				//Set the default selector if needed
+				if(mDefaultSelector){
+					TypedValue outValue = new TypedValue();
+					getContext().getTheme().resolveAttribute(R.attr.selectableItemBackground,
+							outValue, true);
+					tabView.setBackgroundResource(outValue.resourceId);
 				}
 			}
 
@@ -415,6 +430,13 @@ public class TabLayout extends HorizontalScrollView {
 				if(mHasIcon){
 					ImageView iconView = (ImageView)tabView.findViewById(mTabViewIconId);
 					iconView.setImageResource(mIconIds[i]);
+				}
+				//Set the default selector if needed
+				if(mDefaultSelector){
+					TypedValue outValue = new TypedValue();
+					getContext().getTheme().resolveAttribute(R.attr.selectableItemBackground,
+							outValue, true);
+					tabView.setBackgroundResource(outValue.resourceId);
 				}
 			}
 			else {
