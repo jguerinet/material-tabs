@@ -1,17 +1,13 @@
-apply plugin: 'com.android.application'
-
-version= '1.0'
-group = 'com.guerinet.tabs'
+apply plugin: 'com.android.library'
 
 android{
     compileSdkVersion 22
     buildToolsVersion "22.0.1"
 
     defaultConfig{
-        applicationId "com.guerinet.materialtabs"
         minSdkVersion 10
         targetSdkVersion 22
-        versionName this.version
+        versionName '1.0'
     }
     buildTypes{
         release{
