@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -59,6 +60,20 @@ public class TabLayout extends HorizontalScrollView {
 	 *  already open tab
 	 */
 	private int mCurrentPosition = -1;
+	/* ICON VIEWS */
+	/**
+	 * True if the custom tab has an icon, false otherwise
+	 */
+	private boolean mHasIcon = false;
+	/**
+	 * The Id of the ImageView for the icon
+	 */
+	private int mTabViewIconId;
+	/**
+	 * The array of Ids to use for the icon drawables
+	 */
+	private int[] mIconIds;
+
 
 	private int mTitleOffset;
 
@@ -140,6 +155,21 @@ public class TabLayout extends HorizontalScrollView {
 	}
 
 	/**
+	 * Sets the custom layout view that has an icon
+	 *
+	 * @param layoutResId To Layout Id to be inflated
+	 * @param textViewId  Id of the {@link TextView} in the inflated view
+	 * @param imageViewId Id of the {@link android.widget.ImageView} in the inflated view
+	 * @param iconIds     The list of icon Ids to use for the icon
+	 */
+	public void setCustomTabView(int layoutResId, int textViewId, int imageViewId, int[] iconIds){
+		setCustomTabView(layoutResId, textViewId);
+		mHasIcon = true;
+		mTabViewIconId = imageViewId;
+		mIconIds = iconIds;
+	}
+
+	/**
 	 * Sets the associated view pager. Note that the assumption here is that the pager content
 	 * (number of tabs and tab titles) does not change after this call has been made.
 	 */
@@ -192,6 +222,11 @@ public class TabLayout extends HorizontalScrollView {
 				tabView = LayoutInflater.from(getContext()).inflate(mTabViewLayoutId, mTabStrip,
 						false);
 				tabTitleView = (TextView) tabView.findViewById(mTabViewTextViewId);
+				//Set up the icon if needed
+				if(mHasIcon){
+					ImageView iconView = (ImageView)tabView.findViewById(mTabViewIconId);
+					iconView.setImageResource(mIconIds[i]);
+				}
 			}
 
 			if (tabView == null) {
@@ -367,6 +402,11 @@ public class TabLayout extends HorizontalScrollView {
 				tabView = LayoutInflater.from(getContext()).inflate(mTabViewLayoutId, mTabStrip,
 						false);
 				tabTitleView = (TextView) tabView.findViewById(mTabViewTextViewId);
+				//Set up the icon if needed
+				if(mHasIcon){
+					ImageView iconView = (ImageView)tabView.findViewById(mTabViewIconId);
+					iconView.setImageResource(mIconIds[i]);
+				}
 			}
 			else {
 				tabView = createDefaultTabView(getContext());
