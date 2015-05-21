@@ -376,6 +376,15 @@ public class TabLayout extends HorizontalScrollView {
 		return mTabStrip.getChildAt(position);
 	}
 
+	/**
+	 * Sets the color of the indicator when a tab is selected
+	 *
+	 * @param color The indicator color
+	 */
+	public void setIndicatorColor(int color){
+		mTabStrip.setSelectedIndicatorColors(color);
+	}
+
 	/* NON-VIEWPAGER TABS */
 
 	/**
