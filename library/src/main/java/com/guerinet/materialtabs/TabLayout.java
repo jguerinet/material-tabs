@@ -74,6 +74,10 @@ public class TabLayout extends HorizontalScrollView {
 	 */
 	private boolean mDefaultSelector;
 	/**
+	 * The text color to use for the tabs, -1 if none set
+	 */
+	private int mDefaultTextColor = -1;
+	/**
 	 * The Id of the ImageView for the icon
 	 */
 	private int mTabViewIconId;
@@ -133,6 +137,19 @@ public class TabLayout extends HorizontalScrollView {
 	}
 
 	/**
+	 * Sets all of the needed colors
+	 *
+	 * @param selectorId      The selector Id
+	 * @param textColor       The text color
+	 * @param indicatorColors The indicator color(s)
+	 */
+	public void setDefaultColors(int selectorId, int textColor, int... indicatorColors){
+		setDefaultSelector(selectorId);
+		setDefaultTextColor(textColor);
+		setSelectedIndicatorColors(indicatorColors);
+	}
+
+	/**
 	 * Sets the colors to be used for indicating the selected tab. These colors are treated as a
 	 * circular array. Providing one color will mean that all tabs are indicated with the same color.
 	 */
@@ -149,6 +166,15 @@ public class TabLayout extends HorizontalScrollView {
 	 */
 	public void setOnPageChangeListener(ViewPager.OnPageChangeListener listener) {
 		mViewPagerPageChangeListener = listener;
+	}
+
+	/**
+	 * Sets the default tab text color
+	 *
+	 * @param textColor The text color to use
+	 */
+	public void setDefaultTextColor(int textColor){
+		this.mDefaultTextColor = textColor;
 	}
 
 	/**
