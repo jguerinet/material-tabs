@@ -259,6 +259,10 @@ public class TabLayout extends HorizontalScrollView {
 		textView.setEllipsize(TextUtils.TruncateAt.END);
 		textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, TAB_VIEW_TEXT_SIZE_SP);
 		textView.setTypeface(Typeface.DEFAULT_BOLD);
+		//Set the text color if there is one
+		if(this.mDefaultTextColor != -1){
+			textView.setTextColor(this.mDefaultTextColor);
+		}
 		textView.setLayoutParams(new LinearLayout.LayoutParams(
 				ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
