@@ -449,10 +449,17 @@ public class TabLayout extends HorizontalScrollView {
 	}
 
 	/**
+	 * @return The tab currently opened
+	 */
+	public int getCurrentTab(){
+		return this.mCurrentPosition;
+	}
+
+	/**
 	 * Forces the OnClick of the currently opened tab
 	 */
 	public void clickCurrentTab(){
-		int currentPosition = mCurrentPosition;
+		int currentPosition = getCurrentTab();
 		//Set this to -1 to force the click action
 		mCurrentPosition = -1;
 
