@@ -66,6 +66,10 @@ public class TabLayout extends HorizontalScrollView {
 	 */
 	private boolean mHasIcon = false;
 	/**
+	 * The default selector Id, -1 if none set
+	 */
+	private int mDefaultSelectorId = -1;
+	/**
 	 * True if the custom tab should use the default selector, false otherwise
 	 */
 	private boolean mDefaultSelector;
@@ -148,6 +152,31 @@ public class TabLayout extends HorizontalScrollView {
 	}
 
 	/**
+	 * Sets the default selector. By default, it will use the selectableItemBackground attribute,
+	 *  but this will not work on API 10
+	 * @param selectorId The selector Id
+	 */
+	public void setDefaultSelector(int selectorId){
+		this.mDefaultSelectorId = selectorId;
+	}
+
+	/**
+	 * @return The default background to use
+	 */
+	private int getDefaultBackground(){
+		if(Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB){
+			throw new IllegalStateException("API 10 must have the default selector set");
+		}
+		else{
+			TypedValue outValue = new TypedValue();
+			//Use the custom default selector if it is set
+			getContext().getTheme().resolveAttribute(mDefaultSelectorId != -1 ? mDefaultSelectorId :
+					android.R.attr.selectableItemBackground, outValue, true);
+			return outValue.resourceId;
+		}
+	}
+
+	/**
 	 * Set the custom layout to be inflated for the tab views.
 	 *
 	 * @param layoutResId Layout id to be inflated
@@ -203,10 +232,7 @@ public class TabLayout extends HorizontalScrollView {
 		textView.setLayoutParams(new LinearLayout.LayoutParams(
 				ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
-		TypedValue outValue = new TypedValue();
-		getContext().getTheme().resolveAttribute(android.R.attr.selectableItemBackground,
-				outValue, true);
-		textView.setBackgroundResource(outValue.resourceId);
+		textView.setBackgroundResource(getDefaultBackground());
 		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH){
 			textView.setAllCaps(true);
 		}
@@ -237,10 +263,7 @@ public class TabLayout extends HorizontalScrollView {
 				}
 				//Set the default selector if needed
 				if(mDefaultSelector){
-					TypedValue outValue = new TypedValue();
-					getContext().getTheme().resolveAttribute(android.R.attr.selectableItemBackground,
-							outValue, true);
-					tabView.setBackgroundResource(outValue.resourceId);
+					tabView.setBackgroundResource(getDefaultBackground());
 				}
 			}
 
