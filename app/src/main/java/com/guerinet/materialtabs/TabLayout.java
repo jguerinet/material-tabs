@@ -36,7 +36,7 @@ import java.util.List;
  * The views used as tabs can be customized by calling {@link #setCustomTabView(int, int)},
  * providing the layout ID of your custom layout.
  */
-public class SlidingTabLayout extends HorizontalScrollView {
+public class TabLayout extends HorizontalScrollView {
 	/**
 	 * Allows complete control over the colors drawn in the tab layout. Set with
 	 * {@link #setCustomTabColorizer(TabColorizer)}.
@@ -70,17 +70,17 @@ public class SlidingTabLayout extends HorizontalScrollView {
 	private SparseArray<String> mContentDescriptions = new SparseArray<>();
 	private ViewPager.OnPageChangeListener mViewPagerPageChangeListener;
 
-	private final SlidingTabStrip mTabStrip;
+	private final TabStrip mTabStrip;
 
-	public SlidingTabLayout(Context context) {
+	public TabLayout(Context context) {
 		this(context, null);
 	}
 
-	public SlidingTabLayout(Context context, AttributeSet attrs) {
+	public TabLayout(Context context, AttributeSet attrs) {
 		this(context, attrs, 0);
 	}
 
-	public SlidingTabLayout(Context context, AttributeSet attrs, int defStyle) {
+	public TabLayout(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 
 		// Disable the Scroll Bar
@@ -90,7 +90,7 @@ public class SlidingTabLayout extends HorizontalScrollView {
 
 		mTitleOffset = (int) (TITLE_OFFSET_DIPS * getResources().getDisplayMetrics().density);
 
-		mTabStrip = new SlidingTabStrip(context);
+		mTabStrip = new TabStrip(context);
 		addView(mTabStrip, LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 	}
 
@@ -118,7 +118,7 @@ public class SlidingTabLayout extends HorizontalScrollView {
 	}
 
 	/**
-	 * Set the {@link ViewPager.OnPageChangeListener}. When using {@link SlidingTabLayout} you are
+	 * Set the {@link ViewPager.OnPageChangeListener}. When using {@link TabLayout} you are
 	 * required to set any {@link ViewPager.OnPageChangeListener} through this method. This is so
 	 * that the layout can update it's scroll position correctly.
 	 *

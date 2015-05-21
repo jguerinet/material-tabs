@@ -25,7 +25,7 @@ import android.widget.LinearLayout;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class SlidingTabStrip extends LinearLayout {
+class TabStrip extends LinearLayout {
 	private static final int DEFAULT_BOTTOM_BORDER_THICKNESS_DIPS = 0;
 	private static final byte DEFAULT_BOTTOM_BORDER_COLOR_ALPHA = 0x26;
 	private static final int SELECTED_INDICATOR_THICKNESS_DIPS = 3;
@@ -42,14 +42,14 @@ class SlidingTabStrip extends LinearLayout {
 	private int mSelectedPosition;
 	private float mSelectionOffset;
 
-	private SlidingTabLayout.TabColorizer mCustomTabColorizer;
+	private TabLayout.TabColorizer mCustomTabColorizer;
 	private final SimpleTabColorizer mDefaultTabColorizer;
 
-	SlidingTabStrip(Context context) {
+	TabStrip(Context context) {
 		this(context, null);
 	}
 
-	SlidingTabStrip(Context context, AttributeSet attrs) {
+	TabStrip(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		setWillNotDraw(false);
 
@@ -73,7 +73,7 @@ class SlidingTabStrip extends LinearLayout {
 		mSelectedIndicatorPaint = new Paint();
 	}
 
-	void setCustomTabColorizer(SlidingTabLayout.TabColorizer customTabColorizer) {
+	void setCustomTabColorizer(TabLayout.TabColorizer customTabColorizer) {
 		mCustomTabColorizer = customTabColorizer;
 		invalidate();
 	}
@@ -95,7 +95,7 @@ class SlidingTabStrip extends LinearLayout {
 	protected void onDraw(Canvas canvas) {
 		final int height = getHeight();
 		final int childCount = getChildCount();
-		final SlidingTabLayout.TabColorizer tabColorizer = mCustomTabColorizer != null
+		final TabLayout.TabColorizer tabColorizer = mCustomTabColorizer != null
 				? mCustomTabColorizer
 				: mDefaultTabColorizer;
 
@@ -151,7 +151,7 @@ class SlidingTabStrip extends LinearLayout {
 		return Color.rgb((int) r, (int) g, (int) b);
 	}
 
-	private static class SimpleTabColorizer implements SlidingTabLayout.TabColorizer {
+	private static class SimpleTabColorizer implements TabLayout.TabColorizer {
 		private int[] mIndicatorColors;
 
 		@Override
