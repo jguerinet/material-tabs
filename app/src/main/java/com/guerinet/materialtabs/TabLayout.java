@@ -329,6 +329,18 @@ public class TabLayout extends HorizontalScrollView {
 		mTabStrip.removeAllViews();
 	}
 
+	/**
+	 * @param position The position of the desired tab
+	 * @return The tab view
+	 */
+	public View getTabView(int position){
+		//Make sure that the position is within bounds
+		if(position < 0 || position >= mTabStrip.getChildCount()){
+			return null;
+		}
+		return mTabStrip.getChildAt(position);
+	}
+
 	/* NON-VIEWPAGER TABS */
 
 	/**
