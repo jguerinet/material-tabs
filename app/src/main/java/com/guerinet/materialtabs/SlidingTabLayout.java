@@ -16,6 +16,10 @@ import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * To be used with ViewPager to provide a tab indicator component which give constant feedback as to
  * the user's scroll progress.
@@ -318,4 +322,154 @@ public class SlidingTabLayout extends HorizontalScrollView {
 		}
 	}
 
+	/* NON-VIEWPAGER TABS */
+
+	/**
+	 * Adds the tabs based on a list of Strings to use as tab titles
+	 *
+	 * @param callback   The {@link Callback} to call when a tab is clicked
+	 * @param initialTab The initial tab to show
+	 * @param titles     The titles for the tabs
+	 */
+	public void populateTabStrip(Callback callback, int initialTab, List<String> titles){
+		//Create a new listener based on the given callback
+		TabClickListener listener = new TabClickListener(callback);
+		View firsTab = null;
+
+		//Go through the titles
+		for(int i = 0; i < titles.size(); i ++){
+			String title = titles.get(i);
+
+			View tabView;
+			TextView tabTitleView = null;
+
+			//If there is a custom tab view layout id set, try and inflate it
+			if(mTabViewLayoutId != 0){
+				tabView = LayoutInflater.from(getContext()).inflate(mTabViewLayoutId, mTabStrip,
+						false);
+				tabTitleView = (TextView) tabView.findViewById(mTabViewTextViewId);
+			}
+			else {
+				tabView = createDefaultTabView(getContext());
+			}
+
+			if(tabTitleView == null && TextView.class.isInstance(tabView)){
+				tabTitleView = (TextView) tabView;
+			}
+
+			if (mDistributeEvenly) {
+				LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) tabView.getLayoutParams();
+				lp.width = 0;
+				lp.weight = 1;
+			}
+
+			tabTitleView.setText(title);
+			tabView.setOnClickListener(listener);
+
+			mTabStrip.addView(tabView);
+
+			if(i == initialTab){
+				firsTab = tabView;
+			}
+		}
+
+		if(firsTab != null){
+			//Click on the first tab if there is one
+			firsTab.performClick();
+			//Set the current position
+			mCurrentPosition = initialTab;
+		}
+	}
+
+	/**
+	 * Adds the tabs based on the given titles
+	 *
+	 * @param callback   The {@link Callback} to use when a tab is selected
+	 * @param initialTab The initial tab selected
+	 * @param titles     The variable list of titles
+	 */
+	public void addTabs(Callback callback, int initialTab, String... titles){
+		List<String> tabTitles = new ArrayList<>();
+		Collections.addAll(tabTitles, titles);
+
+		populateTabStrip(callback, initialTab, tabTitles);
+	}
+
+	/**
+	 * Adds the tabs based on a list of Strings to use as tab titles.
+	 *  Assumes that the first tab is the selected one but will not call the callback
+	 *
+	 * @param callback The {@link Callback} to call when a tab is clicked
+	 * @param titles   The titles for the tabs
+	 */
+	public void addTabs(Callback callback, List<String> titles){
+		populateTabStrip(callback, -1, titles);
+	}
+
+	/**
+	 * Adds the tabs based on the given titles.
+	 *  Assumes that the first tab is the selected one but will not call the callback
+	 *
+	 * @param callback The {@link Callback} to call when a tab is clicked
+	 * @param titles   The variable list of titles
+	 */
+	public void addTabs(Callback callback, String... titles){
+		addTabs(callback, -1, titles);
+	}
+
+	/**
+	 * The OnClickListener used when we are using tabs without a ViewPager
+	 */
+	private class TabClickListener implements OnClickListener{
+		/**
+		 * The callback to call when a tab is selected
+		 */
+		private Callback mCallback;
+		/**
+		 * The ViewPagerListener instance to update the UI
+		 */
+		private InternalViewPagerListener listener;
+
+		/**
+		 * Default Constructor
+		 *
+		 * @param callback The callback
+		 */
+		public TabClickListener(Callback callback){
+			//Create a new InternalViewPagerListener to update the UI
+			this.listener = new InternalViewPagerListener();
+			this.mCallback = callback;
+		}
+
+		@Override
+		public void onClick(View v){
+			for (int i = 0; i < mTabStrip.getChildCount(); i++) {
+				if (v == mTabStrip.getChildAt(i)){
+					//If this tab is already open, do nothing
+					if(i == mCurrentPosition){
+						return;
+					}
+					//Set the new position
+					mCurrentPosition = i;
+
+					//Call the appropriate listeners/callbacks
+					mCallback.onTabSelected(i);
+					listener.onPageSelected(i);
+					return;
+				}
+			}
+		}
+	}
+
+	/**
+	 * Callback to implement when a tab is clicked on
+	 */
+	public static abstract class Callback {
+		/**
+		 * Called when a tab is selected
+		 *
+		 * @param position The tab position
+		 */
+		public abstract void onTabSelected(int position);
+	}
 }
