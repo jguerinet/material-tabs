@@ -176,6 +176,31 @@ public class TabLayout extends HorizontalScrollView {
 		addView(mTabStrip, LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 	}
 
+	/* GETTERS */
+
+	/**
+	 * @return The default background to use
+	 */
+	private int getTabBackground(){
+		TypedValue outValue = new TypedValue();
+
+		if(mDefaultSelectorId == null){
+			//If we are in API 10 and a selector has not been set, throw an exception
+			if(Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB){
+				throw new IllegalStateException("API 10 must have the default selector set");
+			}
+			else{
+				getContext().getTheme().resolveAttribute(android.R.attr.selectableItemBackground,
+						outValue, true);
+			}
+		}
+		else{
+			//Use the set selector Id
+			getContext().getTheme().resolveAttribute(mDefaultSelectorId, outValue, true);
+		}
+		return outValue.resourceId;
+	}
+
 	/* SETTERS */
 
 	/**
@@ -258,22 +283,6 @@ public class TabLayout extends HorizontalScrollView {
 	}
 
 	/**
-	 * @return The default background to use
-	 */
-	private int getDefaultBackground(){
-		if(Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB){
-			throw new IllegalStateException("API 10 must have the default selector set");
-		}
-		else{
-			TypedValue outValue = new TypedValue();
-			//Use the custom default selector if it is set
-			getContext().getTheme().resolveAttribute(mDefaultSelectorId != null ?
-					mDefaultSelectorId : android.R.attr.selectableItemBackground, outValue, true);
-			return outValue.resourceId;
-		}
-	}
-
-	/**
 	 * Set the custom layout to be inflated for the tab views.
 	 *
 	 * @param layoutResId Layout id to be inflated
@@ -336,7 +345,7 @@ public class TabLayout extends HorizontalScrollView {
 		textView.setLayoutParams(new LinearLayout.LayoutParams(
 				ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
-		textView.setBackgroundResource(getDefaultBackground());
+		textView.setBackgroundResource(getTabBackground());
 		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH){
 			textView.setAllCaps(true);
 		}
@@ -367,7 +376,7 @@ public class TabLayout extends HorizontalScrollView {
 				}
 				//Set the default selector if needed
 				if(mDefaultSelector){
-					tabView.setBackgroundResource(getDefaultBackground());
+					tabView.setBackgroundResource(getTabBackground());
 				}
 			}
 
