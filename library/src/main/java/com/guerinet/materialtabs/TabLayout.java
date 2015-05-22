@@ -113,7 +113,7 @@ public class TabLayout extends HorizontalScrollView {
 	/**
 	 * The text color to use for the tabs, null if none set
 	 */
-	private Integer mDefaultTextColor = null;
+	private Integer mDefaultTextColorId = null;
 	/**
 	 * The array of Ids to use for the icon drawables
 	 */
@@ -199,8 +199,30 @@ public class TabLayout extends HorizontalScrollView {
 	}
 
 	/**
+	 * Sets the default tab text color
+	 *
+	 * @param textColorId The Id of the text color to use
+	 */
+	public void setDefaultTextColor(int textColorId){
+		this.mDefaultTextColorId = textColorId;
+	}
+
+	/**
+	 * Sets the default selector. By default, it will use the selectableItemBackground attribute,
+	 *  but this will not work on API 10
+	 *
+	 * @param selectorId The selector Id
+	 */
+	public void setDefaultSelector(int selectorId){
+		this.mDefaultSelectorId = selectorId;
+	}
+
+	/**
 	 * Sets the colors to be used for indicating the selected tab. These colors are treated as a
-	 * circular array. Providing one color will mean that all tabs are indicated with the same color.
+	 * circular array. Providing one color will mean that all tabs are indicated with the same
+	 * color.
+	 *
+	 * @param colors The list of indicator colors
 	 */
 	public void setSelectedIndicatorColors(int... colors) {
 		mTabStrip.setSelectedIndicatorColors(colors);
@@ -233,24 +255,6 @@ public class TabLayout extends HorizontalScrollView {
 	 */
 	public void setOnPageChangeListener(ViewPager.OnPageChangeListener listener) {
 		mViewPagerPageChangeListener = listener;
-	}
-
-	/**
-	 * Sets the default tab text color
-	 *
-	 * @param textColor The text color to use
-	 */
-	public void setDefaultTextColor(int textColor){
-		this.mDefaultTextColor = textColor;
-	}
-
-	/**
-	 * Sets the default selector. By default, it will use the selectableItemBackground attribute,
-	 *  but this will not work on API 10
-	 * @param selectorId The selector Id
-	 */
-	public void setDefaultSelector(int selectorId){
-		this.mDefaultSelectorId = selectorId;
 	}
 
 	/**
@@ -326,8 +330,8 @@ public class TabLayout extends HorizontalScrollView {
 		textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, TAB_VIEW_TEXT_SIZE_SP);
 		textView.setTypeface(Typeface.DEFAULT_BOLD);
 		//Set the text color if there is one
-		if(this.mDefaultTextColor != null){
-			textView.setTextColor(this.mDefaultTextColor);
+		if(this.mDefaultTextColorId != null){
+			textView.setTextColor(this.mDefaultTextColorId);
 		}
 		textView.setLayoutParams(new LinearLayout.LayoutParams(
 				ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
