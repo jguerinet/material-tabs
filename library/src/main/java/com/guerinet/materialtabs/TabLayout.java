@@ -176,6 +176,16 @@ public class TabLayout extends HorizontalScrollView {
 		addView(mTabStrip, LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 	}
 
+	@Override
+	protected void onAttachedToWindow() {
+		super.onAttachedToWindow();
+
+		//Scroll to the current ViewPager position if there is one
+		if (mViewPager != null) {
+			scrollToTab(mViewPager.getCurrentItem(), 0);
+		}
+	}
+
 	/* GETTERS */
 
 	/**
@@ -375,7 +385,7 @@ public class TabLayout extends HorizontalScrollView {
 	 */
 	public void setViewPager(ViewPager viewPager) {
 		//Remove all existing views
-		mTabStrip.removeAllViews();
+		clear();
 
 		mViewPager = viewPager;
 		if (viewPager != null) {
@@ -387,29 +397,52 @@ public class TabLayout extends HorizontalScrollView {
 	/* HELPERS */
 
 	/**
-	 * Create a default view to be used for tabs. This is called if a custom tab view is not set via
-	 * {@link #setCustomTabView(int, int)}.
+	 * Clears the tabs
 	 */
-	protected TextView createDefaultTabView(Context context) {
-		TextView textView = new TextView(context);
-		textView.setGravity(Gravity.CENTER);
+	public void clear(){
+		mTabStrip.removeAllViews();
+	}
+
+	/**
+	 * Sets up the title {@link TextView} as per the material guidelines
+	 *
+	 * @param textView The TextView
+	 */
+	private void prepareTextView(TextView textView){
 		//Keep it to 1 line or the selectors won't work
 		textView.setSingleLine();
-		textView.setEllipsize(TextUtils.TruncateAt.END);
-		textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, TAB_VIEW_TEXT_SIZE_SP);
-		textView.setTypeface(Typeface.DEFAULT_BOLD);
-		//Set the text color if there is one
-		if(this.mDefaultTextColorId != null){
-			textView.setTextColor(this.mDefaultTextColorId);
-		}
-		textView.setLayoutParams(new LinearLayout.LayoutParams(
-				ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
-		textView.setBackgroundResource(getTabBackground());
+		//Set the text to all caps if we are in 14+
 		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH){
 			textView.setAllCaps(true);
 		}
 
+		//Tabs are bold
+		textView.setTypeface(Typeface.DEFAULT_BOLD);
+	}
+
+	/**
+	 * Creates a default view to be used for tabs. This is called if a custom tab view is not set
+	 * via {@link #setCustomTabView(int, int)}.
+	 *
+	 * @param context The app context
+	 * @return The default view to use
+	 */
+	protected TextView createDefaultTabView(Context context){
+		TextView textView = new TextView(context);
+		prepareTextView(textView);
+		textView.setGravity(Gravity.CENTER);
+		textView.setEllipsize(TextUtils.TruncateAt.END);
+		textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, TAB_VIEW_TEXT_SIZE_SP);
+		//Set the text color if there is one
+		if(this.mDefaultTextColorId != null){
+			textView.setTextColor(getResources().getColor(mDefaultTextColorId));
+		}
+		textView.setLayoutParams(new LinearLayout.LayoutParams(
+				ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+		textView.setBackgroundResource(getTabBackground());
+
+		//Padding
 		int padding = (int) (TAB_VIEW_PADDING_DIPS * getResources().getDisplayMetrics().density);
 		textView.setPadding(padding, padding, padding, padding);
 
@@ -466,15 +499,6 @@ public class TabLayout extends HorizontalScrollView {
 				tabView.setSelected(true);
 				mCurrentPosition = i;
 			}
-		}
-	}
-
-	@Override
-	protected void onAttachedToWindow() {
-		super.onAttachedToWindow();
-
-		if (mViewPager != null) {
-			scrollToTab(mViewPager.getCurrentItem(), 0);
 		}
 	}
 
@@ -564,13 +588,6 @@ public class TabLayout extends HorizontalScrollView {
 				}
 			}
 		}
-	}
-
-	/**
-	 * Clears the tabs
-	 */
-	public void clear(){
-		mTabStrip.removeAllViews();
 	}
 
 	/**
