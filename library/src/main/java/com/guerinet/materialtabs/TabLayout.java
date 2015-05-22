@@ -216,10 +216,10 @@ public class TabLayout extends HorizontalScrollView {
 	 * @return The tab view
 	 */
 	public View getTabView(int position){
-		//Make sure that the position is within bounds
 		if(position < 0 || position >= mTabStrip.getChildCount()){
 			return null;
 		}
+
 		return mTabStrip.getChildAt(position);
 	}
 
@@ -404,6 +404,28 @@ public class TabLayout extends HorizontalScrollView {
 	}
 
 	/**
+	 * Scrolls to the specified tab
+	 *
+	 * @param tabIndex       The index of the tab to scroll to
+	 * @param positionOffset The position offset
+	 */
+	private void scrollToTab(int tabIndex, int positionOffset) {
+		View selectedChild = getTabView(tabIndex);
+
+		//No need to continue if the tab doesn't exist
+		if(selectedChild != null){
+			int targetScrollX = selectedChild.getLeft() + positionOffset;
+
+			if (tabIndex > 0 || positionOffset > 0) {
+				// If we're not at the first child and are mid-scroll, make sure we obey the offset
+				targetScrollX -= mTitleOffset;
+			}
+
+			scrollTo(targetScrollX, 0);
+		}
+	}
+
+	/**
 	 * Sets up the title {@link TextView} as per the material guidelines
 	 *
 	 * @param textView The TextView
@@ -499,25 +521,6 @@ public class TabLayout extends HorizontalScrollView {
 				tabView.setSelected(true);
 				mCurrentPosition = i;
 			}
-		}
-	}
-
-	private void scrollToTab(int tabIndex, int positionOffset) {
-		final int tabStripChildCount = mTabStrip.getChildCount();
-		if (tabStripChildCount == 0 || tabIndex < 0 || tabIndex >= tabStripChildCount) {
-			return;
-		}
-
-		View selectedChild = mTabStrip.getChildAt(tabIndex);
-		if (selectedChild != null) {
-			int targetScrollX = selectedChild.getLeft() + positionOffset;
-
-			if (tabIndex > 0 || positionOffset > 0) {
-				// If we're not at the first child and are mid-scroll, make sure we obey the offset
-				targetScrollX -= mTitleOffset;
-			}
-
-			scrollTo(targetScrollX, 0);
 		}
 	}
 
