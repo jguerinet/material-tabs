@@ -201,6 +201,32 @@ public class TabLayout extends HorizontalScrollView {
 		return outValue.resourceId;
 	}
 
+	/**
+	 * @param position The position of the desired tab
+	 * @return The tab view
+	 */
+	public View getTabView(int position){
+		//Make sure that the position is within bounds
+		if(position < 0 || position >= mTabStrip.getChildCount()){
+			return null;
+		}
+		return mTabStrip.getChildAt(position);
+	}
+
+	/**
+	 * @return The tab currently opened
+	 */
+	public int getCurrentTab(){
+		return mCurrentPosition;
+	}
+
+	/**
+	 * @return Te view of the current tab
+	 */
+	public View getCurrentTabView(){
+		return getTabView(mCurrentPosition);
+	}
+
 	/* SETTERS */
 
 	/**
@@ -240,6 +266,14 @@ public class TabLayout extends HorizontalScrollView {
 	 */
 	public void setDefaultSelector(int selectorId){
 		this.mDefaultSelectorId = selectorId;
+	}
+
+	/**
+	 * @param i    The tab number
+	 * @param desc The tab's content description
+	 */
+	public void setContentDescription(int i, String desc) {
+		mContentDescriptions.put(i, desc);
 	}
 
 	/**
@@ -435,10 +469,6 @@ public class TabLayout extends HorizontalScrollView {
 		}
 	}
 
-	public void setContentDescription(int i, String desc) {
-		mContentDescriptions.put(i, desc);
-	}
-
 	@Override
 	protected void onAttachedToWindow() {
 		super.onAttachedToWindow();
@@ -541,25 +571,6 @@ public class TabLayout extends HorizontalScrollView {
 	 */
 	public void clear(){
 		mTabStrip.removeAllViews();
-	}
-
-	/**
-	 * @param position The position of the desired tab
-	 * @return The tab view
-	 */
-	public View getTabView(int position){
-		//Make sure that the position is within bounds
-		if(position < 0 || position >= mTabStrip.getChildCount()){
-			return null;
-		}
-		return mTabStrip.getChildAt(position);
-	}
-
-	/**
-	 * @return The tab currently opened
-	 */
-	public int getCurrentTab(){
-		return this.mCurrentPosition;
 	}
 
 	/**
