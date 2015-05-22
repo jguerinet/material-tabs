@@ -15,9 +15,9 @@
  */
 
 apply plugin: 'com.android.library'
-apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'android-maven'
 
-version = "0.0.7"
+version = "1.0.0"
 
 android {
     compileSdkVersion 22
@@ -26,7 +26,7 @@ android {
     defaultConfig {
         minSdkVersion 10
         targetSdkVersion 22
-        versionCode 7
+        versionCode 8
         versionName version
     }
     buildTypes {}
@@ -49,18 +49,24 @@ artifacts {
     archives sourcesJar
 }
 
+//Builds a jar file in addition to the default aar file
+android.libraryVariants.all { variant ->
+    def name = variant.buildType.name
+    def task = project.tasks.create "jar${name.capitalize()}", Jar
+    task.dependsOn variant.javaCompile
+    task.from variant.javaCompile.destinationDir
+    artifacts.add('archives', task);
+}
+
 def siteUrl = 'https://github.com/jguerinet/material-tabs'
 def gitUrl = 'https://github.com/jguerinet/material-tabs.git'
 group = "com.guerinet.materialtabs"
 
 install {
     repositories.mavenInstaller {
-        // This generates POM.xml with proper parameters
         pom {
             project {
                 packaging 'jar'
-
-                // Add your description here
                 name 'Custom extension of Google\'s SlidingTabLayout'
                 url siteUrl
 
