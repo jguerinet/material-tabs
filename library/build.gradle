@@ -17,6 +17,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'android-maven'
 
+archivesBaseName="material-tabs"
 version = "1.0.0"
 
 android {
