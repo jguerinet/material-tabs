@@ -473,7 +473,7 @@ public class TabLayout extends HorizontalScrollView {
 
 	private void populateTabStrip() {
 		final PagerAdapter adapter = mViewPager.getAdapter();
-		final View.OnClickListener tabClickListener = new TabViewPagerClickListener();
+		final View.OnClickListener tabClickListener = new TabClickListener();
 
 		for (int i = 0; i < adapter.getCount(); i++) {
 			View tabView = null;
@@ -520,75 +520,6 @@ public class TabLayout extends HorizontalScrollView {
 			if (i == mViewPager.getCurrentItem()) {
 				tabView.setSelected(true);
 				mCurrentPosition = i;
-			}
-		}
-	}
-
-	private class InternalViewPagerListener implements ViewPager.OnPageChangeListener {
-		private int mScrollState;
-
-		@Override
-		public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-			int tabStripChildCount = mTabStrip.getChildCount();
-			if ((tabStripChildCount == 0) || (position < 0) || (position >= tabStripChildCount)) {
-				return;
-			}
-
-			mTabStrip.onViewPagerPageChanged(position, positionOffset);
-
-			View selectedTitle = mTabStrip.getChildAt(position);
-			int extraOffset = (selectedTitle != null)
-					? (int) (positionOffset * selectedTitle.getWidth())
-					: 0;
-			scrollToTab(position, extraOffset);
-
-			if (mViewPagerPageChangeListener != null) {
-				mViewPagerPageChangeListener.onPageScrolled(position, positionOffset,
-						positionOffsetPixels);
-			}
-		}
-
-		@Override
-		public void onPageScrollStateChanged(int state) {
-			mScrollState = state;
-
-			if (mViewPagerPageChangeListener != null) {
-				mViewPagerPageChangeListener.onPageScrollStateChanged(state);
-			}
-		}
-
-		@Override
-		public void onPageSelected(int position) {
-			//Update the current position (only useful when using this with a ViewPager)
-			mCurrentPosition = position;
-			if (mScrollState == ViewPager.SCROLL_STATE_IDLE) {
-				mTabStrip.onViewPagerPageChanged(position, 0f);
-				scrollToTab(position, 0);
-			}
-			for (int i = 0; i < mTabStrip.getChildCount(); i++) {
-				mTabStrip.getChildAt(i).setSelected(position == i);
-			}
-			if (mViewPagerPageChangeListener != null) {
-				mViewPagerPageChangeListener.onPageSelected(position);
-			}
-		}
-
-	}
-
-	private class TabViewPagerClickListener implements View.OnClickListener {
-		@Override
-		public void onClick(View v) {
-			for (int i = 0; i < mTabStrip.getChildCount(); i++) {
-				if (v == mTabStrip.getChildAt(i)){
-					//If this tab is already open, do nothing
-					if(i == mCurrentPosition){
-						return;
-					}
-					//Set the new position
-					mCurrentPosition = i;
-					mViewPager.setCurrentItem(i);
-					return;
-				}
 			}
 		}
 	}
@@ -712,31 +643,93 @@ public class TabLayout extends HorizontalScrollView {
 	}
 
 	/**
-	 * The OnClickListener used when we are using tabs without a ViewPager
+	 * {@link ViewPager.OnPageChangeListener} to use to update the selector
+	 */
+	private class InternalViewPagerListener implements ViewPager.OnPageChangeListener {
+		/**
+		 * The current scroll state
+		 */
+		private int mScrollState;
+
+		@Override
+		public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels){
+			mTabStrip.onViewPagerPageChanged(position, positionOffset);
+
+			View selectedTitle = getTabView(position);
+			int extraOffset = (selectedTitle != null) ?
+					(int) (positionOffset * selectedTitle.getWidth()) : 0;
+			scrollToTab(position, extraOffset);
+
+			//Call the page listener if there's an associated one
+			if(mViewPagerPageChangeListener != null){
+				mViewPagerPageChangeListener.onPageScrolled(position, positionOffset,
+						positionOffsetPixels);
+			}
+		}
+
+		@Override
+		public void onPageScrollStateChanged(int state) {
+			mScrollState = state;
+
+			//Call the page listener if there's an associated one
+			if(mViewPagerPageChangeListener != null){
+				mViewPagerPageChangeListener.onPageScrollStateChanged(state);
+			}
+		}
+
+		@Override
+		public void onPageSelected(int position) {
+			//Update the current position (only useful when using this with a ViewPager)
+			mCurrentPosition = position;
+			if(mScrollState == ViewPager.SCROLL_STATE_IDLE){
+				mTabStrip.onViewPagerPageChanged(position, 0f);
+				scrollToTab(position, 0);
+			}
+
+			//Go through the children and set their selected state depending on the selected page
+			for(int i = 0; i < mTabStrip.getChildCount(); i++){
+				mTabStrip.getChildAt(i).setSelected(position == i);
+			}
+
+			//Call the page listener if there's an associated one
+			if(mViewPagerPageChangeListener != null){
+				mViewPagerPageChangeListener.onPageSelected(position);
+			}
+		}
+	}
+
+	/**
+	 * {@link View.OnClickListener} used for the tabs
 	 */
 	private class TabClickListener implements OnClickListener{
 		/**
-		 * The callback to call when a tab is selected
+		 * The callback to call when a tab is selected for when using the tabs without a ViewPager
 		 */
-		private Callback mCallback;
+		private Callback mCallback = null;
 		/**
-		 * The ViewPagerListener instance to update the UI
+		 * The listener to use when using the tabs without a ViewPager
 		 */
-		private InternalViewPagerListener listener;
+		private InternalViewPagerListener mListener = null;
 
 		/**
-		 * Default Constructor
+		 * Constructor to use when not using a ViewPager
 		 *
 		 * @param callback The callback
 		 */
 		public TabClickListener(Callback callback){
 			//Create a new InternalViewPagerListener to update the UI
-			this.listener = new InternalViewPagerListener();
-			this.mCallback = callback;
+			mListener = new InternalViewPagerListener();
+			mCallback = callback;
 		}
+
+		/**
+		 * Constructor to use when using a ViewPager
+		 */
+		public TabClickListener(){}
 
 		@Override
 		public void onClick(View v){
+			//Go through the tabs
 			for (int i = 0; i < mTabStrip.getChildCount(); i++) {
 				if (v == mTabStrip.getChildAt(i)){
 					//If this tab is already open, do nothing
@@ -746,9 +739,15 @@ public class TabLayout extends HorizontalScrollView {
 					//Set the new position
 					mCurrentPosition = i;
 
-					//Call the appropriate listeners/callbacks
-					listener.onPageSelected(i);
-					mCallback.onTabSelected(i);
+					//Is using the ViewPager, set the new item
+					if(mListener == null){
+						mViewPager.setCurrentItem(i);
+					}
+					//If not, call the appropriate listeners/callbacks
+					else{
+						mListener.onPageSelected(i);
+						mCallback.onTabSelected(i);
+					}
 					return;
 				}
 			}
