@@ -611,8 +611,8 @@ public class TabLayout extends HorizontalScrollView {
 					mCurrentPosition = i;
 
 					//Call the appropriate listeners/callbacks
-					mCallback.onTabSelected(i);
 					listener.onPageSelected(i);
+					mCallback.onTabSelected(i);
 					return;
 				}
 			}
