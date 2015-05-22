@@ -176,10 +176,12 @@ public class TabLayout extends HorizontalScrollView {
 		addView(mTabStrip, LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 	}
 
+	/* SETTERS */
+
 	/**
 	 * Set the custom {@link TabColorizer} to be used.
 	 *
-	 * If you only require simple custmisation then you can use
+	 * If you only require simple customisation then you can use
 	 * {@link #setSelectedIndicatorColors(int...)} to achieve
 	 * similar effects.
 	 */
@@ -187,21 +189,13 @@ public class TabLayout extends HorizontalScrollView {
 		mTabStrip.setCustomTabColorizer(tabColorizer);
 	}
 
+	/**
+	 * Gives the tabs equal weights if enabled
+	 *
+	 * @param distributeEvenly True if the tabs should be evenly distributed, false otherwise
+	 */
 	public void setDistributeEvenly(boolean distributeEvenly) {
 		mDistributeEvenly = distributeEvenly;
-	}
-
-	/**
-	 * Sets all of the needed colors
-	 *
-	 * @param selectorId      The selector Id
-	 * @param textColor       The text color
-	 * @param indicatorColors The indicator color(s)
-	 */
-	public void setDefaultColors(int selectorId, int textColor, int... indicatorColors){
-		setDefaultSelector(selectorId);
-		setDefaultTextColor(textColor);
-		setSelectedIndicatorColors(indicatorColors);
 	}
 
 	/**
@@ -210,6 +204,24 @@ public class TabLayout extends HorizontalScrollView {
 	 */
 	public void setSelectedIndicatorColors(int... colors) {
 		mTabStrip.setSelectedIndicatorColors(colors);
+	}
+
+	/**
+	 * Sets all of the needed colors
+	 *
+	 * @param selectorId        The selector Id
+	 * @param textColorId       The text color Id
+	 * @param indicatorColorIds The indicator color Id(s)
+	 */
+	public void setColors(int selectorId, int textColorId, int... indicatorColorIds){
+		setDefaultSelector(selectorId);
+		setDefaultTextColor(textColorId);
+
+		//Change the indicator color Ids to actual colors
+		for(int i = 0; i < indicatorColorIds.length; i++){
+			indicatorColorIds[i] = getResources().getColor(indicatorColorIds[i]);
+		}
+		setSelectedIndicatorColors(indicatorColorIds);
 	}
 
 	/**
