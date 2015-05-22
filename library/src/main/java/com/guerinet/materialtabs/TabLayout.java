@@ -63,7 +63,6 @@ public class TabLayout extends HorizontalScrollView {
 		 * @return return the color of the indicator used when {@code position} is selected.
 		 */
 		int getIndicatorColor(int position);
-
 	}
 	/**
 	 * Dimensions used throughout the class
@@ -501,7 +500,10 @@ public class TabLayout extends HorizontalScrollView {
 			if(mTabViewLayoutId != 0){
 				tabView = LayoutInflater.from(getContext()).inflate(mTabViewLayoutId, mTabStrip,
 						false);
-				tabView.setBackgroundResource(getTabBackground());
+				//Set the default selector if we should use the default selector
+				if(mDefaultSelector){
+					tabView.setBackgroundResource(getTabBackground());
+				}
 
 				tabTitleView = (TextView) tabView.findViewById(mTabViewTextViewId);
 				prepareTextView(tabTitleView);
