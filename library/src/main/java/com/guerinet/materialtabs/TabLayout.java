@@ -136,14 +136,32 @@ public class TabLayout extends HorizontalScrollView {
 	 */
 	private final TabStrip mTabStrip;
 
+	/**
+	 * Default Constructor
+	 *
+	 * @param context The app context
+	 */
 	public TabLayout(Context context) {
 		this(context, null);
 	}
 
+	/**
+	 * Default Constructor with an attribute set
+	 *
+	 * @param context The app context
+	 * @param attrs   The list of attributes
+	 */
 	public TabLayout(Context context, AttributeSet attrs) {
 		this(context, attrs, 0);
 	}
 
+	/**
+	 * Default Constructor with an attribute set and the default style resource
+	 *
+	 * @param context  The app context
+	 * @param attrs    The list of attributes
+	 * @param defStyle The default style resource
+	 */
 	public TabLayout(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 
