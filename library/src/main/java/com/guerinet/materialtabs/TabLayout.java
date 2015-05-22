@@ -19,7 +19,6 @@ package com.guerinet.materialtabs;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Build;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -95,21 +94,17 @@ public class TabLayout extends HorizontalScrollView {
 	 */
 	private int mTabViewTextViewId;
 	/**
-	 * ImageView Id for the eventual icon of a custom layout
+	 * ImageView Id for the eventual icon of a custom layout, null if none set
 	 */
-	private int mTabViewIconId;
-	/**
-	 * True if the custom tab has an icon, false otherwise
-	 */
-	private boolean mHasIcon = false;
-	/**
-	 * The default selector Id, null if none set
-	 */
-	private Integer mDefaultSelectorId = null;
+	private Integer mTabViewIconId = null;
 	/**
 	 * True if the custom tab should use the default selector, false otherwise
 	 */
 	private boolean mDefaultSelector;
+	/**
+	 * The default selector Id, null if none set
+	 */
+	private Integer mDefaultSelectorId = null;
 	/**
 	 * The text color to use for the tabs, null if none set
 	 */
@@ -390,7 +385,13 @@ public class TabLayout extends HorizontalScrollView {
 		mViewPager = viewPager;
 		if (viewPager != null) {
 			viewPager.setOnPageChangeListener(new InternalViewPagerListener());
-			populateTabStrip();
+			//Get the tab titles
+			List<String> titles = new ArrayList<>();
+			for(int i = 0; i < mViewPager.getChildCount(); i ++){
+				titles.add(mViewPager.getAdapter().getPageTitle(i).toString());
+			}
+
+			addTabs(new TabClickListener(), mViewPager.getCurrentItem(), titles);
 		}
 	}
 
@@ -401,6 +402,17 @@ public class TabLayout extends HorizontalScrollView {
 	 */
 	public void clear(){
 		mTabStrip.removeAllViews();
+	}
+
+	/**
+	 * Forces the OnClick of the currently opened tab
+	 */
+	public void clickCurrentTab(){
+		int currentPosition = getCurrentTab();
+		//Set this to -1 to force the click action
+		mCurrentPosition = -1;
+
+		getTabView(currentPosition).performClick();
 	}
 
 	/**
@@ -447,11 +459,10 @@ public class TabLayout extends HorizontalScrollView {
 	 * Creates a default view to be used for tabs. This is called if a custom tab view is not set
 	 * via {@link #setCustomTabView(int, int)}.
 	 *
-	 * @param context The app context
 	 * @return The default view to use
 	 */
-	protected TextView createDefaultTabView(Context context){
-		TextView textView = new TextView(context);
+	protected TextView createDefaultTabView(){
+		TextView textView = new TextView(getContext());
 		prepareTextView(textView);
 		textView.setGravity(Gravity.CENTER);
 		textView.setEllipsize(TextUtils.TruncateAt.END);
@@ -471,88 +482,18 @@ public class TabLayout extends HorizontalScrollView {
 		return textView;
 	}
 
-	private void populateTabStrip() {
-		final PagerAdapter adapter = mViewPager.getAdapter();
-		final View.OnClickListener tabClickListener = new TabClickListener();
-
-		for (int i = 0; i < adapter.getCount(); i++) {
-			View tabView = null;
-			TextView tabTitleView = null;
-
-			if (mTabViewLayoutId != 0) {
-				// If there is a custom tab view layout id set, try and inflate it
-				tabView = LayoutInflater.from(getContext()).inflate(mTabViewLayoutId, mTabStrip,
-						false);
-				tabTitleView = (TextView) tabView.findViewById(mTabViewTextViewId);
-				//Set up the icon if needed
-				if(mHasIcon){
-					ImageView iconView = (ImageView)tabView.findViewById(mTabViewIconId);
-					iconView.setImageResource(mIconIds[i]);
-				}
-				//Set the default selector if needed
-				if(mDefaultSelector){
-					tabView.setBackgroundResource(getTabBackground());
-				}
-			}
-
-			if (tabView == null) {
-				tabView = createDefaultTabView(getContext());
-			}
-
-			if (tabTitleView == null && TextView.class.isInstance(tabView)) {
-				tabTitleView = (TextView) tabView;
-			}
-
-			if (mDistributeEvenly) {
-				LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) tabView.getLayoutParams();
-				lp.width = 0;
-				lp.weight = 1;
-			}
-
-			tabTitleView.setText(adapter.getPageTitle(i));
-			tabView.setOnClickListener(tabClickListener);
-			String desc = mContentDescriptions.get(i, null);
-			if (desc != null) {
-				tabView.setContentDescription(desc);
-			}
-
-			mTabStrip.addView(tabView);
-			if (i == mViewPager.getCurrentItem()) {
-				tabView.setSelected(true);
-				mCurrentPosition = i;
-			}
-		}
-	}
-
-	/**
-	 * Forces the OnClick of the currently opened tab
-	 */
-	public void clickCurrentTab(){
-		int currentPosition = getCurrentTab();
-		//Set this to -1 to force the click action
-		mCurrentPosition = -1;
-
-		getTabView(currentPosition).performClick();
-	}
-
-	/* NON-VIEWPAGER TABS */
-
 	/**
 	 * Adds the tabs based on a list of Strings to use as tab titles
 	 *
-	 * @param callback   The {@link Callback} to call when a tab is clicked
+	 * @param listener   The {@link TabClickListener} to use when a tab is clicked
 	 * @param initialTab The initial tab to show
 	 * @param titles     The titles for the tabs
 	 */
-	public void addTabs(Callback callback, int initialTab, List<String> titles){
-		//Create a new listener based on the given callback
-		TabClickListener listener = new TabClickListener(callback);
-		View firsTab = null;
+	private void addTabs(TabClickListener listener, int initialTab, List<String> titles){
+		View initialTabView = null;
 
 		//Go through the titles
 		for(int i = 0; i < titles.size(); i ++){
-			String title = titles.get(i);
-
 			View tabView;
 			TextView tabTitleView = null;
 
@@ -560,50 +501,73 @@ public class TabLayout extends HorizontalScrollView {
 			if(mTabViewLayoutId != 0){
 				tabView = LayoutInflater.from(getContext()).inflate(mTabViewLayoutId, mTabStrip,
 						false);
+				tabView.setBackgroundResource(getTabBackground());
+
 				tabTitleView = (TextView) tabView.findViewById(mTabViewTextViewId);
+				prepareTextView(tabTitleView);
+
 				//Set up the icon if needed
-				if(mHasIcon){
+				if(mTabViewIconId != null){
 					ImageView iconView = (ImageView)tabView.findViewById(mTabViewIconId);
-					iconView.setImageResource(mIconIds[i]);
-				}
-				//Set the default selector if needed
-				if(mDefaultSelector){
-					TypedValue outValue = new TypedValue();
-					getContext().getTheme().resolveAttribute(android.R.attr.selectableItemBackground,
-							outValue, true);
-					tabView.setBackgroundResource(outValue.resourceId);
+					//Wrap through the icons
+					iconView.setImageResource(mIconIds[i % mIconIds.length]);
 				}
 			}
-			else {
-				tabView = createDefaultTabView(getContext());
+			else{
+				//If not, just use the default tab view
+				tabView = createDefaultTabView();
 			}
 
-			if(tabTitleView == null && TextView.class.isInstance(tabView)){
+			//If there is no tab title and the tab view is a TextView, use that
+			if(tabTitleView == null){
+				if(!TextView.class.isInstance(tabView)){
+					//If there is no tab title, throw an exception
+					throw new IllegalStateException("Could not find the title TextView");
+				}
 				tabTitleView = (TextView) tabView;
 			}
 
-			if (mDistributeEvenly) {
-				LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) tabView.getLayoutParams();
+			//Set equal weights if we are to distribute these tabs evenly
+			if(mDistributeEvenly){
+				LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams)tabView.getLayoutParams();
 				lp.width = 0;
 				lp.weight = 1;
 			}
 
-			tabTitleView.setText(title);
+			//Set the text and the listener
+			tabTitleView.setText(titles.get(i));
 			tabView.setOnClickListener(listener);
 
+			//Set the content description if there is one
+			String desc = mContentDescriptions.get(i, null);
+			if (desc != null) {
+				tabView.setContentDescription(desc);
+			}
+
+			//Add it to the strip
 			mTabStrip.addView(tabView);
 
+			//If we found the initial tab, store it
 			if(i == initialTab){
-				firsTab = tabView;
+				initialTabView = tabView;
 			}
 		}
 
-		if(firsTab != null){
-			//Click on the first tab if there is one
-			firsTab.performClick();
-			//Set the current position
-			mCurrentPosition = initialTab;
+		//Click on the first tab if there is one. This will set the initial position
+		if(initialTabView != null){
+			initialTabView.performClick();
 		}
+	}
+
+	/**
+	 * Adds the tabs based on a list of Strings to use as tab titles.
+	 *  Assumes that the first tab is the selected one but will not call the callback
+	 *
+	 * @param callback The {@link Callback} to call when a tab is clicked
+	 * @param titles   The titles for the tabs
+	 */
+	public void addTabs(Callback callback, List<String> titles){
+		addTabs(new TabClickListener(callback), -1, titles);
 	}
 
 	/**
@@ -617,18 +581,7 @@ public class TabLayout extends HorizontalScrollView {
 		List<String> tabTitles = new ArrayList<>();
 		Collections.addAll(tabTitles, titles);
 
-		addTabs(callback, initialTab, tabTitles);
-	}
-
-	/**
-	 * Adds the tabs based on a list of Strings to use as tab titles.
-	 *  Assumes that the first tab is the selected one but will not call the callback
-	 *
-	 * @param callback The {@link Callback} to call when a tab is clicked
-	 * @param titles   The titles for the tabs
-	 */
-	public void addTabs(Callback callback, List<String> titles){
-		addTabs(callback, -1, titles);
+		addTabs(new TabClickListener(callback), initialTab, tabTitles);
 	}
 
 	/**
