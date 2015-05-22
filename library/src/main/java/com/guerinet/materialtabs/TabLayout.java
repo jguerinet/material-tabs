@@ -1,3 +1,19 @@
+/*
+ * Copyright 2015 Julien Guerinet
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.guerinet.materialtabs;
 
 import android.content.Context;
@@ -44,24 +60,44 @@ public class TabLayout extends HorizontalScrollView {
 	 * {@link #setCustomTabColorizer(TabColorizer)}.
 	 */
 	public interface TabColorizer {
-
 		/**
 		 * @return return the color of the indicator used when {@code position} is selected.
 		 */
 		int getIndicatorColor(int position);
 
 	}
-
+	/**
+	 * Dimensions used throughout the class
+	 */
 	private static final int TITLE_OFFSET_DIPS = 24;
 	private static final int TAB_VIEW_PADDING_DIPS = 16;
 	private static final int TAB_VIEW_TEXT_SIZE_SP = 12;
-
+	/**
+	 * The title offset
+	 */
+	private int mTitleOffset;
 	/**
 	 * Keeps track of the current tab open to avoid calling methods when a user clicks on an
 	 *  already open tab
 	 */
 	private int mCurrentPosition = -1;
-	/* ICON VIEWS */
+	/**
+	 * The content descriptions to use for the tabs
+	 */
+	private SparseArray<String> mContentDescriptions = new SparseArray<>();
+	/* VIEWS */
+	/**
+	 * Layout Id to use for a custom layout
+	 */
+	private int mTabViewLayoutId;
+	/**
+	 * TextView Id for the title of a custom layout
+	 */
+	private int mTabViewTextViewId;
+	/**
+	 * ImageView Id for the eventual icon of a custom layout
+	 */
+	private int mTabViewIconId;
 	/**
 	 * True if the custom tab has an icon, false otherwise
 	 */
@@ -79,25 +115,25 @@ public class TabLayout extends HorizontalScrollView {
 	 */
 	private Integer mDefaultTextColor = null;
 	/**
-	 * The Id of the ImageView for the icon
-	 */
-	private int mTabViewIconId;
-	/**
 	 * The array of Ids to use for the icon drawables
 	 */
 	private int[] mIconIds;
-
-
-	private int mTitleOffset;
-
-	private int mTabViewLayoutId;
-	private int mTabViewTextViewId;
+	/**
+	 * True if the tabs should be distributed evenly, false otherwise
+	 */
 	private boolean mDistributeEvenly;
-
+	/* VIEWPAGER STUFF */
+	/**
+	 * The {@link ViewPager} instance if the tabs are associated to a ViewPager
+	 */
 	private ViewPager mViewPager;
-	private SparseArray<String> mContentDescriptions = new SparseArray<>();
+	/**
+	 * The {@link ViewPager.OnPageChangeListener} to update the selector view
+	 */
 	private ViewPager.OnPageChangeListener mViewPagerPageChangeListener;
-
+	/**
+	 * The tab strip containing the list of tabs
+	 */
 	private final TabStrip mTabStrip;
 
 	public TabLayout(Context context) {
