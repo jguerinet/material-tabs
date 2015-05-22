@@ -647,9 +647,10 @@ public class TabLayout extends HorizontalScrollView {
 	 */
 	private class InternalViewPagerListener implements ViewPager.OnPageChangeListener {
 		/**
-		 * The current scroll state
+		 * The current scroll state. By default idle so that the indicator is scrolled to a tab
+		 *  when not using a ViewPager.
 		 */
-		private int mScrollState;
+		private int mScrollState = ViewPager.SCROLL_STATE_IDLE;
 
 		@Override
 		public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels){
