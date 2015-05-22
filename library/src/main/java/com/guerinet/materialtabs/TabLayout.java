@@ -283,40 +283,64 @@ public class TabLayout extends HorizontalScrollView {
 	}
 
 	/**
-	 * Set the custom layout to be inflated for the tab views.
+	 * Sets the custom layout to be inflated for the tab views.
 	 *
-	 * @param layoutResId Layout id to be inflated
-	 * @param textViewId id of the {@link TextView} in the inflated view
+	 * @param layoutResId     Layout id to be inflated
+	 * @param textViewId      Id of the {@link TextView} in the inflated view
+	 * @param defaultSelector True if the default selector should be used, false otherwise
 	 */
-	public void setCustomTabView(int layoutResId, int textViewId) {
+	public void setCustomTabView(int layoutResId, int textViewId, boolean defaultSelector) {
 		mTabViewLayoutId = layoutResId;
 		mTabViewTextViewId = textViewId;
+		mDefaultSelector = defaultSelector;
+	}
+
+	/**
+	 * Sets the custom layout to be inflated for the tab views. Uses the default background selector
+	 *
+	 * @param layoutResId Layout Id to be inflated
+	 * @param textViewId  Id of the {@link TextView} in the inflated view
+	 */
+	public void setCustomTabView(int layoutResId, int textViewId){
+		setCustomTabView(layoutResId, textViewId, true);
 	}
 
 	/**
 	 * Sets the custom layout view that has an icon
 	 *
-	 * @param layoutResId     To Layout Id to be inflated
+	 * @param layoutResId     Layout Id to be inflated
 	 * @param textViewId      Id of the {@link TextView} in the inflated view
-	 * @param imageViewId     Id of the {@link android.widget.ImageView} in the inflated view
-	 * @param iconIds         The list of icon Ids to use for the icon
-	 * @param defaultSelector True if we should use the default selector as the background, false
-	 *                        otherwise. Note: This will override any set background
+	 * @param imageViewId     Id of the {@link ImageView} in the inflated view
+	 * @param defaultSelector True if the default selector should be used, false otherwise
+	 * @param iconIds         Ids of the drawables to use for the icons
 	 */
-	public void setCustomTabView(int layoutResId, int textViewId, int imageViewId, int[] iconIds,
-	                             boolean defaultSelector){
-		setCustomTabView(layoutResId, textViewId);
-		mDefaultSelector = defaultSelector;
-		mHasIcon = true;
+	public void setCustomTabView(int layoutResId, int textViewId, int imageViewId,
+	                             boolean defaultSelector, int... iconIds){
+		setCustomTabView(layoutResId, textViewId, defaultSelector);
 		mTabViewIconId = imageViewId;
 		mIconIds = iconIds;
 	}
 
 	/**
+	 * Sets the custom layout view that has an icon. Uses the default background selector
+	 *
+	 * @param layoutResId Layout Id to be inflated
+	 * @param textViewId  Id of the {@link TextView} in the inflated view
+	 * @param imageViewId Id of the {@link ImageView} in the inflated view
+	 * @param iconIds     Id(s) of the drawables to use for the icons
+	 */
+	public void setCustomTabView(int layoutResId, int textViewId, int imageViewId, int... iconIds){
+		setCustomTabView(layoutResId, textViewId, imageViewId, true, iconIds);
+	}
+
+	/**
 	 * Sets the associated view pager. Note that the assumption here is that the pager content
 	 * (number of tabs and tab titles) does not change after this call has been made.
+	 *
+	 * @param viewPager The {@link ViewPager}
 	 */
 	public void setViewPager(ViewPager viewPager) {
+		//Remove all existing views
 		mTabStrip.removeAllViews();
 
 		mViewPager = viewPager;
@@ -325,6 +349,8 @@ public class TabLayout extends HorizontalScrollView {
 			populateTabStrip();
 		}
 	}
+
+	/* HELPERS */
 
 	/**
 	 * Create a default view to be used for tabs. This is called if a custom tab view is not set via
