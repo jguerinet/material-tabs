@@ -1,5 +1,8 @@
 # Change Log
 
+## Version 2.0.1 (2015-05-23)
+* Switched to aar packaging
+
 ## Version 2.0.0 (2015-05-22)
 * Added more Javadoc
 * Updated copyright
