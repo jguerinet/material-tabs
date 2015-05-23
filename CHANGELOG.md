@@ -1,5 +1,8 @@
 # Change Log
 
+## Version 2.0.4 (2015-05-23)
+* Clearing and resetting the current position when adding new tabs
+
 ## Version 2.0.3 (2015-05-23)
 * Added helper method to add tabs
 
