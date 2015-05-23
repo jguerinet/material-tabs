@@ -16,8 +16,8 @@ or add it with Gradle by using [JitPack][3]:
 	    compile 'com.github.jguerinet:material-tabs:1.0.1'
 	}
 
-[1]:https://github.com/jguerinet/material-tabs/releases/download/1.0.0/material-tabs-1.0.1.jar
-[2]:https://github.com/jguerinet/material-tabs/releases/download/1.0.0/material-tabs-1.0.1-sources.jar
+[1]:https://github.com/jguerinet/material-tabs/releases/download/1.0.1/material-tabs-1.0.1.jar
+[2]:https://github.com/jguerinet/material-tabs/releases/download/1.0.1/material-tabs-1.0.1-sources.jar
 [3]:https://jitpack.io
 
 ## Gradle Dependencies
