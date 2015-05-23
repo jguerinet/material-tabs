@@ -568,6 +568,17 @@ public class TabLayout extends HorizontalScrollView {
 	}
 
 	/**
+	 * Adds the tabs based on a list of Strings to use as tab titles
+	 *
+	 * @param callback   The {@link Callback} to call when a tab is clicked
+	 * @param initialTab The initial tab selected
+	 * @param titles     The variable list of titles
+	 */
+	public void addTabs(Callback callback, int initialTab, List<String> titles){
+		addTabs(new TabClickListener(callback), initialTab, titles);
+	}
+
+	/**
 	 * Adds the tabs based on a list of Strings to use as tab titles.
 	 *  Assumes that the first tab is the selected one but will not call the callback
 	 *
@@ -575,7 +586,7 @@ public class TabLayout extends HorizontalScrollView {
 	 * @param titles   The titles for the tabs
 	 */
 	public void addTabs(Callback callback, List<String> titles){
-		addTabs(new TabClickListener(callback), -1, titles);
+		addTabs(callback, -1, titles);
 	}
 
 	/**
@@ -589,7 +600,7 @@ public class TabLayout extends HorizontalScrollView {
 		List<String> tabTitles = new ArrayList<>();
 		Collections.addAll(tabTitles, titles);
 
-		addTabs(new TabClickListener(callback), initialTab, tabTitles);
+		addTabs(callback, initialTab, tabTitles);
 	}
 
 	/**
