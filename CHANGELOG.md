@@ -1,11 +1,14 @@
 # Change Log
 
-## Version 1.0.0 (2015-05-21)
+## Version 1.0.1 (2015-05-22)
+* Changed version number since 1.0.0 was already used previously
+
+## Version 1.0.0 (2015-05-22)
 * Added more Javadoc
 * Updated copyright
 * Removed a lot of useless code
 
-## Version 0.0.7 (2015-05-21)
+## Version 0.0.7 (2015-05-22)
 * Fixed bug regarding the TabClickListener callback
 
 ## Version 0.0.6 (2015-05-21)
