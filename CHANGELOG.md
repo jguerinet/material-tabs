@@ -1,5 +1,8 @@
 # Change Log
 
+## Version 2.0.2 (2015-05-23)
+* Fixed but when using this with a ViewPager
+
 ## Version 2.0.1 (2015-05-23)
 * Switched to aar packaging
 
