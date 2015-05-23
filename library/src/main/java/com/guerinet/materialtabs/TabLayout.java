@@ -495,6 +495,10 @@ public class TabLayout extends HorizontalScrollView {
 	 * @param titles     The titles for the tabs
 	 */
 	private void addTabs(TabClickListener listener, int initialTab, List<String> titles){
+		//Clear any existing tabs
+		clear();
+		//Reset the current position
+		mCurrentPosition = -1;
 		View initialTabView = null;
 
 		//Go through the titles
