@@ -19,6 +19,7 @@ package com.guerinet.materialtabs;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Build;
+import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -386,8 +387,13 @@ public class TabLayout extends HorizontalScrollView {
 			viewPager.setOnPageChangeListener(new InternalViewPagerListener());
 			//Get the tab titles
 			List<String> titles = new ArrayList<>();
-			for(int i = 0; i < mViewPager.getChildCount(); i ++){
-				titles.add(mViewPager.getAdapter().getPageTitle(i).toString());
+			PagerAdapter adapter = mViewPager.getAdapter();
+			if(adapter == null){
+				throw new IllegalStateException("ViewPager needs to have an adapter set up");
+			}
+
+			for(int i = 0; i < adapter.getCount(); i ++){
+				titles.add(adapter.getPageTitle(i).toString());
 			}
 
 			addTabs(new TabClickListener(), mViewPager.getCurrentItem(), titles);
