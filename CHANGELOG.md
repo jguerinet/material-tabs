@@ -1,5 +1,8 @@
 # Change Log
 
+## Version 2.0.3 (2015-05-23)
+* Added helper method to add tabs
+
 ## Version 2.0.2 (2015-05-23)
 * Fixed but when using this with a ViewPager
 
